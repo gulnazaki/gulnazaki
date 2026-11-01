@@ -33,4 +33,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit --quiet --message "koi: draw the day's koi"
-          git push --quiet
+          for attempt in 1 2 3; do
+            if git push --quiet; then
+              exit 0
+            fi
+            git pull --rebase --quiet
+          done
+          echo "Failed to push koi update after 3 attempts."
+          exit 1
